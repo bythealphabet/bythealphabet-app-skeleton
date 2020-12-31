@@ -6,23 +6,42 @@ import cookieParser from "cookie-parser";
 import compress from "compression";
 import cors from "cors";
 import helmet from "helmet";
-const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(compress());
-app.use(helmet());
-app.use(cors());
-
-//////////////////////////////////////////////////////////////////
-////comment the 2 lines below when going to run in production ////
+import htmlTemplate from "./../htmlTemplate";
+//////////////////////////////////////////////////////////////
+////comment this line below when going to run in production ////
 import devBundle from "../build-utils/devBundle";
-devBundle.compile(app);
 ///////////////////////////////////////////////////////////////
 
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
+
+const app = express();
+
+//////////////////////////////////////////////////////////////
+////comment this line below when going to run in production ////
+devBundle.compile(app);
+///////////////////////////////////////////////////////////////
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(compress());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "default-src": ["'self'"],
+      // "script-src": ["'self'", "/"],
+
+      "object-src": ["'none'"],
+    },
+  })
+);
+app.use(cors());
+
+const CURRENT_WORKING_DIR = process.cwd();
+app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
 
 app.use("/", userRoutes);
 app.use("/", authRoutes);
@@ -36,10 +55,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-const CURRENT_WORKING_DIR = process.cwd();
-app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
-
-import htmlTemplate from "./../htmlTemplate";
 app.get("/", (req, res) => {
   res.status(200).send(htmlTemplate());
 });

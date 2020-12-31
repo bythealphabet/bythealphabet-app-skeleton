@@ -1,10 +1,16 @@
 import React from "react";
 import { hot } from "react-hot-loader";
+import MainRouter from "./MainRouter";
+import { BrowserRouter as Router } from "react-router-dom";
+import AuthProvider from "./auth/AuthContext";
+
 const App = () => {
   return (
-    <div>
-      <h1>Hello Wor d!</h1>
-    </div>
+    <AuthProvider>
+      <Router>
+        <MainRouter />
+      </Router>
+    </AuthProvider>
   );
 };
 export default hot(module)(App);

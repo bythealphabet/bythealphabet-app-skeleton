@@ -1,27 +1,19 @@
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import webpackConfig from "../webpack.config.js";
+import webpackConfig from "./webpack.config.client";
 
-function compile(app) {
-  Promise.resolve(webpackConfig({ mode: "development", name: "browser" }))
-    .then((config) => ({
-      compiler: webpack(config),
-      publicPath: config.output.publicPath,
-    }))
-    .then(({ compiler, publicPath }) => {
-      return {
-        devMiddleware: webpackMiddleware(compiler, {
-          publicPath,
-        }),
-        compiler,
-      };
-    })
-    .then(({ devMiddleware, compiler }) => {
-      app.use(devMiddleware);
-      app.use(webpackHotMiddleware(compiler));
-    })
-    .catch((error) => console.log("error in devBundle", error));
-}
+const compile = (app) => {
+  if (process.env.NODE_ENV == "development") {
+    const compiler = webpack(webpackConfig);
+    const middleware = webpackMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+    });
+    app.use(middleware);
+    app.use(webpackHotMiddleware(compiler));
+  }
+};
 
-export default { compile };
+export default {
+  compile,
+};

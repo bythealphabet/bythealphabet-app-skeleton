@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -r dist ",
     "dev": "nodemon",
-    "build": "webpack --env mode=production --env name=browser --env NODE_ENV=production && webpack --env mode=production --env name=server",
+    "build": "webpack --env mode=production --env name=browser --env NODE_ENV=production --config build-utils/webpack.config.production.js && webpack --env mode=production --env name=server --config build-utils/webpack.config.server.js",
     "start": "NODE_ENV=production node ./dist/server.generated.js"
   },
   "repository": {
@@ -59,11 +59,14 @@
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "helmet": "^4.3.1",
+    "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "mongoose": "^5.11.9",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-hot-loader": "^4.13.0"
+    "react-hot-loader": "^4.13.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
   }
 }
